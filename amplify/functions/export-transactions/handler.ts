@@ -104,17 +104,17 @@ async function renderAndUploadPDF(params: {
         y -= 10;
     };
 
-    drawText(`Mjesečni izvještaj — ${month}`, { size: 20, bold: true }); y -= 20;
+    drawText(`Mjesecni izvjestaj — ${month}`, { size: 20, bold: true }); y -= 20;
 
-    drawText(`Prihodi (očekivani):`, { bold: true });
+    drawText(`Prihodi (ocekivani):`, { bold: true });
     drawText(`€${kpi.incomeExpected.toFixed(2)}`, { align: "right" });
     drawText(`Primljeni prihodi:`, { bold: true });
-    drawText(`€${kpi.incomeActual.toFixed(2)} (Očekivani: €${kpi.incomeReceivedRecurring.toFixed(2)} · Transakcije: €${kpi.txIncome.toFixed(2)})`, { align: "right" });
-    drawText(`Troškovi:`, { bold: true });
-    drawText(`€${kpi.expensesActual.toFixed(2)} (Plaćeni računi: €${kpi.billsPaid.toFixed(2)} · Ostalo: €${kpi.txExpense.toFixed(2)})`, { align: "right" });
-    drawText(`Neplaćeni računi:`, { bold: true });
+    drawText(`€${kpi.incomeActual.toFixed(2)} (Ocekivani: €${kpi.incomeReceivedRecurring.toFixed(2)} · Transakcije: €${kpi.txIncome.toFixed(2)})`, { align: "right" });
+    drawText(`Troskovi:`, { bold: true });
+    drawText(`€${kpi.expensesActual.toFixed(2)} (Placeni racuni: €${kpi.billsPaid.toFixed(2)} · Ostalo: €${kpi.txExpense.toFixed(2)})`, { align: "right" });
+    drawText(`Neplaceni racuni:`, { bold: true });
     drawText(`€${kpi.remainingBills.toFixed(2)}`, { align: "right" });
-    drawText(`Neuplaćeni prihodi:`, { bold: true });
+    drawText(`Neuplaceni prihodi:`, { bold: true });
     drawText(`€${kpi.remainingIncome.toFixed(2)}`, { align: "right" });
     drawText(`Balans:`, { bold: true });
     drawText(`€${kpi.balance.toFixed(2)}`, { align: "right" });
@@ -125,13 +125,13 @@ async function renderAndUploadPDF(params: {
         drawText(`• ${when} ${(t.type || "").toUpperCase()} €${Number(t.amount || 0).toFixed(2)} ${t.description || ""}`, { size: 10 });
     });
 
-    drawSectionHeader("Neplaćeni računi");
+    drawSectionHeader("Neplaceni racuni");
     unpaidBills.slice(0, 10).forEach((b) => {
         drawText(`• ${b.name}`, { size: 10 });
         drawText(`€${Number(b.amount || 0).toFixed(2)}`, { size: 10, align: "right" });
     });
 
-    drawSectionHeader("Neuplaćeni prihodi");
+    drawSectionHeader("Neuplaceni prihodi");
     unreceivedIncome.slice(0, 10).forEach((i) => {
         drawText(`• ${i.name}`, { size: 10 });
         drawText(`€${Number(i.amount || 0).toFixed(2)}`, { size: 10, align: "right" });
@@ -179,7 +179,7 @@ export const handler = async (event: AnyEvent) => {
         month = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
     }
 
-    // --- 1) SNAPSHOT PUT: renderuj tačno ono što stiže iz UI ---
+    // --- 1) SNAPSHOT PUT: renderuj tacno ono sto stize iz UI ---
     if (snapshot) {
         try {
             const url = await renderAndUploadPDF({

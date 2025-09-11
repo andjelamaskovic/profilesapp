@@ -17,6 +17,73 @@ const schema = a
           .authorization((allow) => [
             allow.ownerDefinedIn("profileOwner"),
           ]),
+        Transaction: a
+            .model({
+                amount: a.float().required(),
+                type: a.string().required(),
+                description: a.string(),
+                date: a.datetime().required(),
+                categoryId: a.id(),
+                category: a.belongsTo("Category", "categoryId"),
+            })
+            .authorization((allow) => [
+                allow.owner(),
+                allow.publicApiKey()
+            ]),
+        Category: a
+            .model({
+                name: a.string().required(),
+                color: a.string(),  // opcionalno (npr. #34a853)
+                icon: a.string(),   // opcionalno (npr. "🍔" ili "food")
+                transactions: a.hasMany("Transaction", "categoryId"),
+
+            })
+            .authorization((allow) => [
+                allow.owner(),
+                allow.publicApiKey()
+// svaka kategorija pripada vlasniku
+            ]),
+        SavingsConfig : a.model({
+            monthlyTarget: a.float().required(),   // npr. 100 €/mj
+            yearlyTarget: a.float(),               // npr. 1000 € (opcionalno)
+        }).authorization((allow) => [
+            allow.owner(),        // korisnik vidi/snimа svoje ciljeve
+            allow.publicApiKey()  // ako već koristiš isti pattern u appu
+        ]),
+        // ✅ NOVO: Računi / pretplate sa jednostavnim plaćanjem po mjesecu
+        Bill: a
+            .model({
+                name: a.string().required(),
+                amount: a.float().required(),
+                dueDay: a.integer().required(),  // 1–28
+                categoryId: a.id(),
+                active: a.boolean().default(true),
+                paidMonths: a.string().array(), // npr. ["2025-09","2025-06"]
+                // (po želji ostavi i lastPaidMonth radi kompatibilnosti)
+                lastPaidMonth: a.string(),       // "YYYY-MM" (ako == currentMonth => paid)
+            })
+            .authorization((allow) => [
+                allow.owner(),
+                allow.publicApiKey()
+            ]),
+        IncomeSource: a
+            .model({
+                name: a.string().required(),
+                amount: a.float().required(),
+                payDay: a.integer().required(),   // 1–28
+                categoryId: a.id(),
+                active: a.boolean().default(true),
+                receivedMonths: a.string().array(), // ⬅️ NOVO
+
+                lastReceivedMonth: a.string(),    // "YYYY-MM" (ako je == currentMonth => received)
+            })
+            .authorization((allow) => [
+                allow.owner(),
+                allow.publicApiKey()
+            ]),
+
+
+
     })
     .authorization((allow) => [allow.resource(postConfirmation)]);
 export type Schema = ClientSchema<typeof schema>;

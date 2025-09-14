@@ -72,7 +72,7 @@ export default function BillsPanel({ categories = [], client }) {
     }
 
     async function deleteBill(id) {
-        if (!confirm("Delete this bill?")) return;
+        if (!confirm("Jeste li sigurni da želite da izbrišete ovaj račun?")) return;
         const { errors } = await client.models.Bill.delete({ id });
         if (errors?.length) throw new Error(errors.map(e=>e.message).join(", "));
         setBills(curr=>curr.filter(b=>b.id!==id));

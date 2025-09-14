@@ -1,12 +1,6 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
 import { postConfirmation } from "../auth/post-confirmation/resource";
 
-/*== STEP 1 ===============================================================
-The section below creates a Todo database table with a "content" field. Try
-adding a new "isDone" field as a boolean. The authorization rule below
-specifies that any unauthenticated user can "create", "read", "update", 
-and "delete" any "Todo" records.
-=========================================================================*/
 const schema = a
     .schema({
       UserProfile: a
@@ -44,23 +38,21 @@ const schema = a
 // svaka kategorija pripada vlasniku
             ]),
         SavingsConfig : a.model({
-            monthlyTarget: a.float().required(),   // npr. 100 €/mj
-            yearlyTarget: a.float(),               // npr. 1000 € (opcionalno)
+            monthlyTarget: a.float().required(),
+            yearlyTarget: a.float(),
         }).authorization((allow) => [
-            allow.owner(),        // korisnik vidi/snimа svoje ciljeve
-            allow.publicApiKey()  // ako već koristiš isti pattern u appu
+            allow.owner(),
+            allow.publicApiKey()
         ]),
-        // ✅ NOVO: Računi / pretplate sa jednostavnim plaćanjem po mjesecu
         Bill: a
             .model({
                 name: a.string().required(),
                 amount: a.float().required(),
-                dueDay: a.integer().required(),  // 1–28
+                dueDay: a.integer().required(),
                 categoryId: a.id(),
                 active: a.boolean().default(true),
-                paidMonths: a.string().array(), // npr. ["2025-09","2025-06"]
-                // (po želji ostavi i lastPaidMonth radi kompatibilnosti)
-                lastPaidMonth: a.string(),       // "YYYY-MM" (ako == currentMonth => paid)
+                paidMonths: a.string().array(),
+                lastPaidMonth: a.string(),
             })
             .authorization((allow) => [
                 allow.owner(),
@@ -70,12 +62,12 @@ const schema = a
             .model({
                 name: a.string().required(),
                 amount: a.float().required(),
-                payDay: a.integer().required(),   // 1–28
+                payDay: a.integer().required(),
                 categoryId: a.id(),
                 active: a.boolean().default(true),
-                receivedMonths: a.string().array(), // ⬅️ NOVO
+                receivedMonths: a.string().array(),
 
-                lastReceivedMonth: a.string(),    // "YYYY-MM" (ako je == currentMonth => received)
+                lastReceivedMonth: a.string(),
             })
             .authorization((allow) => [
                 allow.owner(),

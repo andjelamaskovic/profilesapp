@@ -324,7 +324,7 @@ export default function App() {
         >
             {/* Header */}
             <Flex justifyContent="space-between" alignItems="center">
-                <Heading level={2}><img src="./assets/download.png" alt="Budget Tracker" style={{ height: "50px" }} /></Heading>
+                <Heading level={2}><img src="/download.png" alt="Budget Tracker" style={{ height: "50px" }} /></Heading>
                 <Flex gap="0.5rem">
                     {TABS.map((t) => (
                         <Button
